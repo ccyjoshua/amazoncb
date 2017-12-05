@@ -1,0 +1,51 @@
+{% extends "formbase.html" %}
+
+{% load i18n %}
+
+{% block form_head %}<h2>{% trans "Buyer Sign In" %}</h2>{% endblock %}
+
+{% block form_body %}
+    <form id="signin_form" method="post" action="{% url 'account_signin' %}">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger">Your username or password didn't match. Please try again.</div>
+        {% endif %}
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="form-group has-error">
+                    <label for="{{ field.id_for_label }}" class="control-label">{{ field.label }}</label>
+                    <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id}}">
+                    <span class="help-block has-error">
+                        {% for error in  field.errors %}{{ error }}{% endfor %}
+                    </span>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.field.widget.input_type == 'password' %}
+                        <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id}}">
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.html_name }}" id="{{ field.auto_id}}" value="{{ field.value|default_if_none:'' }}">
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-actions col-md-offset-4">
+            <button type="submit" class="btn btn-primary" >{% trans "Sign In" %}</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block bottom_link %}
+    <div class="row" style="font-size: 85%">
+        <div class="col-xs-4 text-center">
+            <a id="forgotpasswordlink" href="#">{% trans "Forgot Password" %}</a>
+        </div>
+        <div class="col-xs-4 text-center">
+            <a id="signuplink_buyer" href="{% url 'account_signup_buyer' %}">{% trans "Sign Up as Seller" %}</a>
+        </div>
+        <div class="col-xs-4 text-center">
+            <a id="signuplink_seller" href="{% url 'account_signup_seller' %}">{% trans "Sign Up as Seller" %}</a>
+        </div>
+    </div>
+{% endblock %}
