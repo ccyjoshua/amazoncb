@@ -4,17 +4,17 @@
 
 {#{% block head_title %}{% trans "Buyer Signup" %}{% endblock %}#}
 
-{% block form_head %}<h2>{% trans "Buyer Sign Up" %}</h2>{% endblock %}
+{% block form_head %}<h3>{% trans "Buyer Sign Up" %}</h3>{% endblock %}
 
 {% block action_url %}{% url 'account_signup_buyer' %}{% endblock %}
 
-{% block bottom_link %}
-    <div class="row" style="font-size: 85%">
-        <div class="col-xs-6 text-center">
-            <a id="signinlink" href="{% url 'account_signin' %}">{% trans "Sign In" %}</a>
-        </div>
-        <div class="col-xs-6 text-center">
-            <a id="signuplink_seller" href="{% url 'account_signup_seller' %}">{% trans "Sign Up as Seller" %}</a>
-        </div>
-    </div>
-{% endblock %}
+{#{% block bottom_link %}#}
+{#    <div class="row" style="font-size: 85%">#}
+{#        <div class="col-xs-6 text-center">#}
+{#            <a id="signinlink" href="{% url 'account_signin' %}">{% trans "Sign In" %}</a>#}
+{#        </div>#}
+{#        <div class="col-xs-6 text-center">#}
+{#            <a id="signuplink_seller" href="{% url 'account_signup_seller' %}">{% trans "Sign Up as Seller" %}</a>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

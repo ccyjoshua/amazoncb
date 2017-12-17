@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, get_user_model, login, models, views
+from django.urls import reverse
 
 from myauth import signals
 from myauth.forms import RegistrationForm
@@ -137,7 +138,7 @@ class BuyerRegistrationView(RegistrationView):
     template_name = 'myauth/signup_buyer.html'
     def register(self, form):
         new_user = super(BuyerRegistrationView, self).register(form)
-        buyer_group, is_created = models.Group.objects.get_or_create(name='buyer_group')
+        buyer_group = models.Group.objects.get(name='buyer_group')
         new_user.groups.add(buyer_group)
         return new_user
 
@@ -146,10 +147,15 @@ class SellerRegistrationView(RegistrationView):
     template_name = 'myauth/signup_seller.html'
     def register(self, form):
         new_user = super(SellerRegistrationView, self).register(form)
-        seller_group, is_created = models.Group.objects.get_or_create(name='seller_group')
+        seller_group = models.Group.objects.get(name='seller_group')
         new_user.groups.add(seller_group)
         return new_user
 
 
-class SigninView(views.LoginView):
+class SignInView(views.LoginView):
     template_name = 'myauth/signin.html'
+
+
+class SignOutView(views.LogoutView):
+    # template_name = 'myauth/signin.html'
+    next_page = '/'

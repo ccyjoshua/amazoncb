@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block form_head %}<h2>{% trans "Buyer Sign In" %}</h2>{% endblock %}
+{% block form_head %}<h3>{% trans "Sign In" %}</h3>{% endblock %}
 
 {% block form_body %}
     <form id="signin_form" method="post" action="{% url 'account_signin' %}">
@@ -30,22 +30,15 @@
                 </div>
             {% endif %}
         {% endfor %}
-        <div class="form-actions col-md-offset-4">
-            <button type="submit" class="btn btn-primary" >{% trans "Sign In" %}</button>
+{#    TODO: a better way to right align "forgot password"?#}
+        <div class="row">
+            <div class="col-xs-5">
+                <button type="submit" class="btn btn-primary" >{% trans "Sign In" %}</button>
+            </div>
+            <div class="col-xs-7">
+                <a href="#" class="btn btn-link" style="text-align: right">Forgot password?</a>
+            </div>
+
         </div>
     </form>
-{% endblock %}
-
-{% block bottom_link %}
-    <div class="row" style="font-size: 85%">
-        <div class="col-xs-4 text-center">
-            <a id="forgotpasswordlink" href="#">{% trans "Forgot Password" %}</a>
-        </div>
-        <div class="col-xs-4 text-center">
-            <a id="signuplink_buyer" href="{% url 'account_signup_buyer' %}">{% trans "Sign Up as Seller" %}</a>
-        </div>
-        <div class="col-xs-4 text-center">
-            <a id="signuplink_seller" href="{% url 'account_signup_seller' %}">{% trans "Sign Up as Seller" %}</a>
-        </div>
-    </div>
 {% endblock %}

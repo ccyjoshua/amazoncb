@@ -1,0 +1,11 @@
+<nav aria-label="...">
+    <ul class="pager">
+    {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+    {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    {% endif %}
+    <li style="float: right; font-size: 85%">Page {{ page_obj.number }} of {{ paginator.num_pages }}</li>
+    </ul>
+</nav>

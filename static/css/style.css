@@ -9,3 +9,28 @@
 .left {
     text-align: left
 }
+
+.right {
+    text-align: right
+}
+
+.text-max-row-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /*display: block; !* or inline-block *!*/
+  /*text-overflow: ellipsis;*/
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 3.6em;
+  line-height: 1.8em;
+}
+
+.vcenter {
+  position: relative;
+  transform: translateY(40%);
+}
+
+.margin-top {
+    margin-top: 5px;
+}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{#FIXME:#}
+{#* text clamping not working very well#}
+
+{% block content %}
+<div class="container">
+{#    <div class="col-sm-8 col-sm-offset-2">#}
+        {% for product in object_list %}
+        <div class="row">
+            <div class="col-xs-3">
+                <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
+            </div>
+            <div class="col-xs-9">
+                <a href="#"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
+                <div class="row"><div class="col-xs-12">${{ product.price }}</div></div>
+                <div class="row">
+                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Ordered" %}: {{ product.ordered }}</div>
+                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Reviewed" %}: {{ product.reviewed }}</div>
+                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Stock" %}: {{ product.stock }}</div>
+                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-default">{% trans "Modify" %}</button></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+        {% include 'mainapp/pagination.html' %}
+{#    </div>#}
+</div>
+{% endblock %}

@@ -16,10 +16,17 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic.base import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='myauth/index.html')),
     url(r'^accounts/', include('myauth.urls')),
+    url(r'^main/', include('mainapp.urls')),
     url(r'^admin/', admin.site.urls),
 ]
+
+# For development only, display user uploaded images
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

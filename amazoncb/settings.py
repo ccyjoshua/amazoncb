@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # my apps
     # 'myauth.apps.AuthConfig',
     'myauth',
+    'mainapp',
 ]
 
 SITE_ID = 2
@@ -158,3 +159,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(os.path.dirname(__file__), '../static').replace('\\', '/'),
 )
+
+MEDIA_ROOT = 'C:\Users\jcchen\PycharmProjects\database_amazoncb\media'
+# MEDIA_URL = 'http://media.localhost:8000/'
+MEDIA_URL = '/media/'
