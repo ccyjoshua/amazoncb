@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><div class="col-xs-12">
+            <a href="{% url 'seller_update_product' object.id %}" class="btn btn-default">{% trans 'Modify' %}</a>
+        </div></div>
+        <div class="row"><div class="col-xs-12"><h3>{{ object.name }}</h3></div></div>
+        <div class="row"><div class="col-sm-4 col-sm-offset-4">
+            <img src="{{ object.image.url }}" alt="Product Image" class="img-responsive">
+        </div></div>
+        <div class="row"><div class="col-xs-12"><h3>${{ object.price }}</h3></div></div>
+        {% if product.requirement %}
+            <div class="row"><div class="col-xs-12"><p>{% trans 'Requirement' %}: {{ object.requirement }}</p></div></div>
+        {% endif %}
+        <div class="row"><div class="col-xs-12">{% trans 'Stock' %}: {{ object.stock }}</div></div>
+        <div class="row"><div class="col-xs-12">{% trans 'Limit per day' %}: {{ object.limit_per_day }}</div></div>
+    </div>
+{% endblock %}

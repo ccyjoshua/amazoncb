@@ -7,27 +7,56 @@
 {% block content %}
 <div class="container">
 {#    <div class="col-sm-8 col-sm-offset-2">#}
-        {% for product in object_list %}
-        <div class="row">
-            <div class="col-xs-3">
-                <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
-            </div>
-            <div class="col-xs-9">
-                <a href="#"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
-                <div class="row"><div class="col-xs-12">${{ product.price }}</div></div>
-                <div class="row">
-                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Ordered" %}: {{ product.ordered }}</div>
-                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
-                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Reviewed" %}: {{ product.reviewed }}</div>
-                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
-                    <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Stock" %}: {{ product.stock }}</div>
-                    <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-default">{% trans "Modify" %}</button></div>
-                </div>
+    {% for product in object_list %}
+    <div class="row">
+        <div class="col-xs-3">
+            <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
+        </div>
+        <div class="col-xs-9">
+            <a href="{% url 'seller_product_detail' product.id %}"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
+            <div class="row"><div class="col-xs-12">${{ product.price }}</div></div>
+            <div class="row">
+                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Ordered" %}: {{ product.ordered }}</div>
+                <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Reviewed" %}: {{ product.reviewed }}</div>
+                <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Stock" %}: <span>{{ product.stock }}</span> (<span>{{ product.limit_per_day }}</span>)</div>
+                <div class="col-md-2 col-xs-6 margin-top"><button id="testid" type="button" class="btn btn-default" data-toggle="modal" data-target="#stockModal" data-stock="{{ product.stock }}" data-limit="{{ product.limit_per_day }}" data-update-stock-url="{% url 'seller_update_stock' product.id %}">{% trans "Modify" %}</button></div>
             </div>
         </div>
-        <hr>
-        {% endfor %}
-        {% include 'mainapp/pagination.html' %}
+    </div>
+    <hr>
+    {% endfor %}
+    {% include 'mainapp/pagination.html' %}
 {#    </div>#}
+</div>
+
+<div class="modal fade" id="stockModal" tabindex="-1" role="form" aria-labelledby="stockModal">
+    <div class="modal-dialog" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <h4 class="modal-title" id="stockModal">{% trans "Modify Stock" %}</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="alert alert-danger hide" role="alert" id="modalFormError">{% trans "Please enter a valid number" %}</div>
+                    <div class="form-group">
+                        <label for="stock" class="col-xs-4 control-label">{% trans "Stock" %}</label>
+                        <div class="col-xs-5"><input type="number" min="0" step="1" class="form-control" id="stock" name="stock"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="limit" class="col-xs-4 control-label">{% trans "Limit per Day" %}</label>
+                        <div class="col-xs-5"><input type="number" min="0" step="1" class="form-control" id="limit" name="limit_per_day"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="button" class="btn btn-primary" id="stockModalSave">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
