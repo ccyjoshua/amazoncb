@@ -136,24 +136,40 @@ class RegistrationView(BaseRegistrationView):
 
 class BuyerRegistrationView(RegistrationView):
     template_name = 'myauth/signup_buyer.html'
+
     def register(self, form):
         new_user = super(BuyerRegistrationView, self).register(form)
         buyer_group = models.Group.objects.get(name='buyer_group')
         new_user.groups.add(buyer_group)
         return new_user
 
+    def get_success_url(self, user):
+        return reverse('buyer_product_list')
+
 
 class SellerRegistrationView(RegistrationView):
     template_name = 'myauth/signup_seller.html'
+
     def register(self, form):
         new_user = super(SellerRegistrationView, self).register(form)
         seller_group = models.Group.objects.get(name='seller_group')
         new_user.groups.add(seller_group)
         return new_user
 
+    def get_success_url(self, user):
+        return reverse('seller_product_list')
+
 
 class SignInView(views.LoginView):
     template_name = 'myauth/signin.html'
+
+    def get_success_url(self):
+        if self.request.user.groups.filter(name='seller_group').exists():
+            return reverse('seller_product_list')
+        elif self.request.user.groups.filter(name='buyer_group').exists():
+            return reverse('buyer_product_list')
+        else:
+            return '/'
 
 
 class SignOutView(views.LogoutView):

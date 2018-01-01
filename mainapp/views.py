@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -14,6 +15,19 @@ from time import sleep
 
 from mainapp.forms import ProductForm
 from mainapp.models import Product
+
+
+class IndexView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            if self.request.user.groups.filter(name='seller_group').exists():
+                return reverse('seller_product_list')
+            elif self.request.user.groups.filter(name='buyer_group').exists():
+                return reverse('buyer_product_list')
+            else:
+                return '/'
+        else:
+            return reverse('account_signin')
 
 
 class SellerAddProductView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
@@ -93,11 +107,18 @@ class SellerUpdateProductView(LoginRequiredMixin, PermissionRequiredMixin, Selle
     permission_required = 'mainapp.change_product'
     model = Product
     template_name = 'mainapp/seller_update_product.html'
-    fields = ['name', 'price', 'description', 'stock', 'limit_per_day']
+    fields = ['name', 'orig_price', 'discount', 'description', 'requirement', 'amazon_link', 'how_to_find', 'stock', 'limit_per_day']
 
     def get_success_url(self):
         self.success_url = reverse('seller_product_detail', args=[self.object.id])
         return super(SellerUpdateProductView, self).get_success_url()
+
+
+class SellerUpdateImageView(LoginRequiredMixin, PermissionRequiredMixin, SellerQuerySetMixin, AjaxableResponseMixin, UpdateView):
+    permission_required = 'mainapp.change_product'
+    model = Product
+    fields = ['image']
+    success_url = '/'  # not used
 
 
 class SellerProductDetailView(LoginRequiredMixin, PermissionRequiredMixin, SellerQuerySetMixin, DetailView):

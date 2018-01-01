@@ -6,6 +6,9 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
 import os.path
+from decimal import *
+from validators import AmazonURLValidator
+from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 User = get_user_model()
@@ -24,20 +27,33 @@ class Product(models.Model):
         unique_together = (("seller_id", "name"),)
 
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)])
-    discount = models.FloatField(default=1, validators=[MinValueValidator(0), MaxValueValidator(1)])  # 100% off
-    description = models.TextField(max_length=1000)
+    name = models.CharField(max_length=500)
+    orig_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)])
+    discount = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])  # percentage off
+    description = models.TextField(max_length=5000)
     image = models.ImageField(upload_to=user_directory_path)
     requirement = models.TextField(blank=True, max_length=500)
+    amazon_link = models.URLField(blank=True, max_length=500, validators=[
+        AmazonURLValidator(message=_('Domain must be Amazon'), code='invalid_domain')])
+    how_to_find = models.TextField(blank=True, max_length=500)
     stock = models.IntegerField(validators=[MinValueValidator(0)])
     limit_per_day = models.IntegerField(validators=[MinValueValidator(0)])
     completed = models.IntegerField(default =0)
     ordered = models.IntegerField(default=0)
     reviewed = models.IntegerField(default=0)
-    must_review = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def description_as_list(self):
+        return self.description.split('\n')
+
+    def requirement_as_list(self):
+        return self.requirement.split('\n')
+
+    @property
+    def sale_price(self):
+        sale_price = Decimal(self.orig_price) * Decimal((100 - self.discount) / 100.)
+        return sale_price.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)
 
 
 class Purchase(models.Model):

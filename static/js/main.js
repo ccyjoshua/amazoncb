@@ -1,3 +1,45 @@
+// ---------------------------
+// Enable tooltip
+// ---------------------------
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
+
+// ---------------------------
+// AJAX setup for CSRF in form
+// ---------------------------
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+// ---------------------------
+// Modal for seller update stock view
+// ---------------------------
 $(function () {
     $('#stockModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);
@@ -41,6 +83,48 @@ $(function () {
             } else {
                 error.removeClass('hide');
             }
+        });
+    });
+});
+
+// ---------------------------
+// Modal for seller update image view
+// ---------------------------
+$(function () {
+    $('#updateImageModal').on('show.bs.modal', function() {
+        var modal = $('#updateImageModal');
+        var form = $('#updateImageForm');
+        var error = $('#modalFormError');
+        var button = $('#updateImageModalSave');
+        // Remove any error message first
+        error.addClass('hide');
+        button.prop('disabled', false);
+        button.click(function (event) {
+            event.preventDefault();
+            button.prop('disabled', true);
+            var file = $('input:file');
+            var data = new FormData(form[0]); // note: have to use "[0]" here since FormData expect a HTML element but not jQuery element
+            $.ajax({
+                url: button.data('update-image-url'),
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                success: function (json) {
+                    // console.log(json);
+                    // console.log('ajax success!');
+                    location.reload();
+                    // modal.modal('hide');
+                },
+                error: function (xhr, errmsg, err) {
+                    // console.log(xhr.status + ": " + xhr.responseText);
+                    error.removeClass('hide');
+                    error.text(xhr.status + ": " + xhr.responseText);
+                    button.prop('disabled', false);
+                }
+            });
         });
     });
 });

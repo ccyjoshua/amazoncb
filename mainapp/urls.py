@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^seller/product-detail/(?P<pk>\d+)$', views.SellerProductDetailView.as_view(), name='seller_product_detail'),
     url(r'^seller/update-stock/(?P<pk>\d+)$', views.SellerUpdateStockView.as_view(), name='seller_update_stock'),
     url(r'^seller/update-product/(?P<pk>\d+)$', views.SellerUpdateProductView.as_view(), name='seller_update_product'),
+    url(r'^seller/update-image/(?P<pk>\d+)$', views.SellerUpdateImageView.as_view(), name='seller_update_image'),
 ]
