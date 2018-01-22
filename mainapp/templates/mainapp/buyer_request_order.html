@@ -1,0 +1,37 @@
+{% extends "mainapp/base_form.html" %}
+{% load i18n %}
+
+{% block before_panel %}
+    <div id="timer_class" class="alert alert-info" role="alert">
+        <p class="font-alert">{% trans 'Time left to submit order: ' %}<b id="timer" style=""></b></p>
+    </div>
+    <p id="expiration" style="display: none;">{{ expiration }}</p>
+{% endblock %}
+
+{% block form_title %}
+    {% trans 'Order detail' %}
+{% endblock %}
+
+{% block form_body %}
+    <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-group {% if form.order_number.errors %}has-error{% endif %}">
+            <label for="{{ form.order_number.id_for_label }}" class="control-label">{% trans "Order Number" %}</label>
+            <input type="text" class="form-control" name="{{ form.order_number.name }}" id="{{ form.order_number.auto_id }}" placeholder="XXX-XXXXXXX-XXXXXXX" required value="{{ form.order_number.data|default_if_none:'' }}">
+            <span class="help-block has-error">{% for error in form.order_number.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-group {% if form.order_screenshot.errors %}has-error{% endif %}">
+            <label for="{{ form.order_screenshot.id_for_label }}" class="control-label">{% trans "Upload Order Screenshot" %}</label>
+            <input type="file" name="{{ form.order_screenshot.name }}" id="{{ form.order_screenshot.auto_id }}" required value="{{ form.order_screenshot.data }}">
+            <span class="help-block has-error">{% for error in form.order_screenshot.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="pull-right">
+            <a href="javascript:history.back()" type="button" class="btn btn-default">{% trans 'Cancel' %}</a>
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+        </div>
+    </form>
+{% endblock %}

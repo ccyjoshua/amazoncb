@@ -1,47 +1,26 @@
-{% extends "base.html" %}
+{% extends "mainapp/base_product_list.html" %}
 {% load i18n %}
 
-{#FIXME:#}
-{#* text clamping not working very well#}
-
-{% block content %}
-<div class="container">
-{#    <div class="col-sm-8 col-sm-offset-2">#}
+{% block before_list %}
     <div class="row"><div class="col-xs-12">
         <a href="{% url 'seller_add_product' %}" class="btn btn-primary pull-right">{% trans 'Add Product' %}</a>
     </div></div>
-    {% for product in object_list %}
-    <div class="row">
-        <div class="col-xs-3">
-            <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
-        </div>
-        <div class="col-xs-9">
-            <a href="{% url 'seller_product_detail' product.id %}"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
-            <div class="row"><div class="col-xs-12">
-                <span class="font-price color-price">${{ product.sale_price }}</span>{% if product.discount != 0 %} <s>${{ product.orig_price }}</s>{% endif %}
-            </div></div>
-            <div class="row">
-                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Ordered" %}: {{ product.ordered }}</div>
-                <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
-                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Reviewed" %}: {{ product.reviewed }}</div>
-                <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
-                <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Stock" %}: <span>{{ product.stock }}</span> (<span>{{ product.limit_per_day }}</span>)</div>
-                <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#stockModal" data-stock="{{ product.stock }}" data-limit="{{ product.limit_per_day }}" data-update-stock-url="{% url 'seller_update_stock' product.id %}">{% trans "Modify" %}</button></div>
-            </div>
-        </div>
-    </div>
-    <hr>
-    {% endfor %}
-    {% if object_list %}
-        {% include 'mainapp/pagination.html' %}
-    {% else %}
-        <div class="row"><div class="col-xs-12 text-center">
-            <h1><small>{% trans 'Your list is empty' %}</small></h1>
-        </div> </div>
-    {% endif %}
-{#    </div>#}
-</div>
+{% endblock %}
 
+{% block product_url %}{% url 'seller_product_detail' product.id %}{% endblock %}
+
+{% block product_control %}
+    <div class="row">
+        <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Ordered" %}: {{ product.ordered }}</div>
+        <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+        <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Reviewed" %}: {{ product.reviewed }}</div>
+        <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-primary {% if not product.ordered %}disabled{% endif %}">{% trans "Verify" %}</button></div>
+        <div class="col-md-2 col-xs-6 text-right vcenter margin-top">{% trans "Stock" %}: <span>{{ product.stock }}</span> (<span>{{ product.limit_per_day }}</span>)</div>
+        <div class="col-md-2 col-xs-6 margin-top"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#stockModal" data-stock="{{ product.stock }}" data-limit="{{ product.limit_per_day }}" data-update-stock-url="{% url 'seller_update_stock' product.id %}">{% trans "Modify" %}</button></div>
+    </div>
+{% endblock %}
+
+{% block after_list %}
 <div class="modal fade" id="stockModal" tabindex="-1" role="form" aria-labelledby="stockModal">
     <div class="modal-dialog" role="form">
         <div class="modal-content">

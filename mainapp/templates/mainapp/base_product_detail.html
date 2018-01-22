@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+
+        {% block before_detail %}{% endblock %}
+
+        <div class="row"><div class="col-xs-12"><h3>{{ object.name }}</h3></div></div>
+        <div class="row"><div class="col-sm-4 col-sm-offset-4">
+            <img src="{{ object.image.url }}" alt="Product Image" class="img-responsive">
+        </div></div>
+        <br>
+
+        {% block after_image %}{% endblock %}
+
+        <div class="row"><div class="col-xs-12">
+            <span class="font-price color-price">${{ object.sale_price }}</span>{% if object.discount != 0 %}<span class="font-price color-price"> ({{ object.discount }}% off)</span> <s>${{ object.orig_price }}</s>{% endif %}
+        </div></div>
+        <div class="row"><div class="col-xs-12">
+            <h4>{% trans 'Description' %}:</h4>
+            <ul>
+                {% for desc in object.description_as_list %}
+                    <li>{{ desc }}</li>
+                {% endfor%}
+            </ul>
+        </div></div>
+        {% if object.requirement %}
+            <div class="row"><div class="col-xs-12">
+                <h4>{% trans 'Order Requirement' %}:</h4>
+                <ul>
+                    {% for req in object.requirement_as_list %}
+                        <li>{{ req }}</li>
+                    {% endfor%}
+                </ul>
+            </div></div>
+        {% endif %}
+        {% if object.amazon_link or object.how_to_find %}
+            <div class="row"><div class="col-xs-12">
+                <h4>{% trans 'How to Find the Product' %}:</h4>
+                <ul>
+                    {% if object.amazon_link %}<li><a href="{{ object.amazon_link }}">{% trans 'Amazon Link' %}</a></li>{% endif %}
+                    {% if object.how_to_find %}<li>{{ object.how_to_find }}</li>{% endif %}
+                </ul>
+            </div></div>
+        {% endif %}
+
+        {% block after_detail %}{% endblock %}
+    </div>
+
+{% block after_container %}{% endblock %}
+
+{% endblock %}

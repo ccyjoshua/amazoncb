@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><div class="col-sm-8 col-sm-offset-2">
+            <div class="alert alert-danger" role="alert">
+            <p class="font-alert">{{ error }}</p>
+            </div>
+        </div></div>
+        <div class="row"><div class="col-xs-12 text-center">
+            <a href="{% url 'buyer_product_list' %}" class="btn btn-default">{% trans 'Back to Product List' %}</a>
+        </div> </div>
+    </div>
+{% endblock %}

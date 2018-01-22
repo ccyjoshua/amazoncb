@@ -1,0 +1,8 @@
+{% extends "mainapp/base_product_detail.html" %}
+{% load i18n %}
+
+{% block after_detail %}
+    <div class="row"><div class="col-sm-4 col-sm-offset-4">
+        <a href="{% url 'buyer_request_order' object.id %}" type="button" class="btn btn-primary btn-block">{% trans 'Request Order' %}</a>
+    </div></div>
+{% endblock %}

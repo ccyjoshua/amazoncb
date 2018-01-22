@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{#FIXME:#}
+{#* text clamping not working very well#}
+
+{% block content %}
+<div class="container">
+{#    <div class="col-sm-8 col-sm-offset-2">#}
+
+    {% block before_list %}{% endblock %}
+
+    {% for product in object_list %}
+    <div class="row">
+        <div class="col-xs-3">
+            <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
+        </div>
+        <div class="col-xs-9">
+            <a href="{% block product_url %}{% endblock %}"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
+            <div class="row"><div class="col-xs-12">
+                <span class="font-price color-price">${{ product.sale_price }}</span>{% if product.discount != 0 %} <s>${{ product.orig_price }}</s>{% endif %}
+            </div></div>
+
+            {% block product_control %}{% endblock %}
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+    {% if object_list %}
+        {% include 'mainapp/pagination.html' %}
+    {% else %}
+        <div class="row"><div class="col-xs-12 text-center">
+            <h1><small>{% trans 'The list is empty' %}</small></h1>
+        </div> </div>
+    {% endif %}
+{#    </div>#}
+</div>
+
+{% block after_list %}{% endblock %}
+
+{% endblock %}

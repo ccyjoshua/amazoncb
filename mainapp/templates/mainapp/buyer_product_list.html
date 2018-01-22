@@ -1,0 +1,4 @@
+{% extends "mainapp/base_product_list.html" %}
+{% load i18n %}
+
+{% block product_url %}{% url 'buyer_product_detail' product.id %}{% endblock %}

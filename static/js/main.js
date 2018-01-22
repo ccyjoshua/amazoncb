@@ -128,3 +128,21 @@ $(function () {
         });
     });
 });
+
+$(function () {
+    var countDownDate = parseFloat($('#expiration').text());
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        $('#timer').text(minutes + " : " + seconds);
+        if (distance < 60 * 1000) {
+            $('#timer_class').removeClass('alert-info').addClass('alert-warning');
+        }
+        if (distance < 1000) {
+            clearInterval(x);
+            $('#timer_class').removeClass('alert-warning').addClass('alert-danger');
+        }
+    }, 1000);
+});

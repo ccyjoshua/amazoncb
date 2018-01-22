@@ -1,73 +1,44 @@
-{% extends "base.html" %}
+{% extends "mainapp/base_product_detail.html" %}
 {% load i18n %}
 
-{% block content %}
-    <div class="container">
-        <div class="row"><div class="col-xs-12">
-            <a href="{% url 'seller_product_list' %}" class="btn btn-default"><span class="glyphicon glyphicon-menu-left"></span> {% trans 'Product List' %}</a>
-            <a href="{% url 'seller_update_product' object.id %}" class="btn btn-default pull-right">{% trans 'Modify' %}</a>
-        </div></div>
-        <div class="row"><div class="col-xs-12"><h3>{{ object.name }}</h3></div></div>
-        <div class="row"><div class="col-sm-4 col-sm-offset-4">
-            <img src="{{ object.image.url }}" alt="Product Image" class="img-responsive">
-        </div></div>
-        <br>
-        <div class="row"><div class="col-xm-12 center">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#updateImageModal">{% trans "Change Image" %}</button>
-        </div></div>
-        <div class="row"><div class="col-xs-12">
-            <span class="font-price color-price">${{ object.sale_price }}</span>{% if object.discount != 0 %}<span class="font-price color-price"> ({{ object.discount }}% off)</span> <s>${{ object.orig_price }}</s>{% endif %}
-        </div></div>
-        <div class="row"><div class="col-xs-12">
-            <h4>{% trans 'Description' %}:</h4>
-            <ul>
-                {% for desc in object.description_as_list %}
-                    <li>{{ desc }}</li>
-                {% endfor%}
-            </ul>
-        </div></div>
-        {% if object.requirement %}
-            <div class="row"><div class="col-xs-12">
-                <h4>{% trans 'Order Requirement' %}:</h4>
-                <ul>
-                    {% for req in object.requirement_as_list %}
-                        <li>{{ req }}</li>
-                    {% endfor%}
-                </ul>
-            </div></div>
-        {% endif %}
-        {% if object.amazon_link or object.how_to_find %}
-            <div class="row"><div class="col-xs-12">
-                <h4>{% trans 'How to Find the Product' %}:</h4>
-                <ul>
-                    {% if object.amazon_link %}<li><a href="{{ object.amazon_link }}">{% trans 'Amazon Link' %}</a></li>{% endif %}
-                    {% if object.how_to_find %}<li>{{ object.how_to_find }}</li>{% endif %}
-                </ul>
-            </div></div>
-        {% endif %}
-        <div class="row"><div class="col-xs-12">{% trans 'Stock' %}: {{ object.stock }}</div></div>
-        <div class="row"><div class="col-xs-12">{% trans 'Limit per day' %}: {{ object.limit_per_day }}</div></div>
-    </div>
+{% block before_detail %}
+    <div class="row"><div class="col-xs-12">
+{#        <a href="{% url 'seller_product_list' %}" class="btn btn-default"><span class="glyphicon glyphicon-menu-left"></span> {% trans 'Product List' %}</a>#}
+        <a href="{% url 'seller_update_product' object.id %}" class="btn btn-default pull-right">{% trans 'Modify' %}</a>
+    </div></div>
+{% endblock %}
 
-<div class="modal fade" id="updateImageModal" tabindex="-1" role="form" aria-labelledby="updateImageModal">
-    <div class="modal-dialog" role="form">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
-                <h4 class="modal-title">{% trans "Change Image" %}</h4>
+{% block after_image %}
+    <div class="row"><div class="col-xm-12 center">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#updateImageModal">{% trans "Change Image" %}</button>
+    </div></div>
+{% endblock %}
+
+{% block after_detail %}
+    <div class="row"><div class="col-xs-12">{% trans 'Stock' %}: {{ object.stock }}</div></div>
+    <div class="row"><div class="col-xs-12">{% trans 'Limit per day' %}: {{ object.limit_per_day }}</div></div>
+{% endblock %}
+
+{% block after_container %}
+    <div class="modal fade" id="updateImageModal" tabindex="-1" role="form" aria-labelledby="updateImageModal">
+        <div class="modal-dialog" role="form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                    <h4 class="modal-title">{% trans "Change Image" %}</h4>
+                </div>
+                <form method="post" action="{% url 'seller_update_image' object.id %}" enctype="multipart/form-data" id="updateImageForm">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="alert alert-danger hide" role="alert" id="modalFormError">{% trans "Please upload a valid image" %}</div>
+                        <input type="file" name="image" id="imageId" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button type="submit" class="btn btn-primary" id="updateImageModalSave" data-update-image-url="{% url 'seller_update_image' object.id %}">{% trans "Save" %}</button>
+                    </div>
+                </form>
             </div>
-            <form method="post" action="{% url 'seller_update_image' object.id %}" enctype="multipart/form-data" id="updateImageForm">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <div class="alert alert-danger hide" role="alert" id="modalFormError">{% trans "Please upload a valid image" %}</div>
-                    <input type="file" name="image" id="imageId" required>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
-                    <button type="submit" class="btn btn-primary" id="updateImageModalSave" data-update-image-url="{% url 'seller_update_image' object.id %}">{% trans "Save" %}</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 {% endblock %}

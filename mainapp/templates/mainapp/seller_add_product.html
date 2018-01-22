@@ -1,92 +1,81 @@
-{% extends "base.html" %}
+{% extends "mainapp/base_form.html" %}
 {% load i18n %}
 
-{% block content %}
-    {% trans "Optional. For example: size, color, review (rating and time to leave review) and seller feedback." as order_requirement %}
-    <div class="container">
-    <div class="mainbox col-sm-8 col-sm-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-title"><h3>{% trans "Add product" %}</h3></div>
+{% block form_title %}
+    {% trans "Add product" %}
+{% endblock %}
+
+{% block form_body %}
+    <form id="seller_add_product_form" method="post" action="{% url 'seller_add_product' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
             </div>
-            <div style="padding-left: 25px; padding-right: 25px" class="panel-body" >
-            <form id="seller_add_product_form" method="post" action="{% url 'seller_add_product' %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-                    </div>
-                {% endif %}
-                <div class="form-group {% if form.name.errors %}has-error{% endif %}">
-                    <label for="{{ form.name.id_for_label }}" class="control-label">{% trans "Product Name" %}</label>
-                    <input type="text" class="form-control" name="{{ form.name.name }}" id="{{ form.name.auto_id }}" placeholder="{% trans "Same name as on Amazon" %}" required value="{{ form.name.data|default_if_none:'' }}">
-                    <span class="help-block has-error">{% for error in form.name.errors %}{{ error }}{% endfor %}</span>
+        {% endif %}
+        <div class="form-group {% if form.name.errors %}has-error{% endif %}">
+            <label for="{{ form.name.id_for_label }}" class="control-label">{% trans "Product Name" %}</label>
+            <input type="text" class="form-control" name="{{ form.name.name }}" id="{{ form.name.auto_id }}" placeholder="{% trans "Same name as on Amazon" %}" required value="{{ form.name.data|default_if_none:'' }}">
+            <span class="help-block has-error">{% for error in form.name.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-inline">
+            <div class="form-group {% if form.orig_price.errors %}has-error{% endif %}">
+                <label for="{{ form.orig_price.id_for_label }}" class="control-label">{% trans "Price" %}</label>
+                <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    <input type="number" min="0" step="0.01" class="form-control" name="{{ form.orig_price.name }}" id="{{ form.orig_price.auto_id }}" placeholder="{% trans "Sale price on Amazon" %}" required value="{{ form.orig_price.data|default_if_none:'' }}">
                 </div>
-                <div class="form-inline">
-                    <div class="form-group {% if form.orig_price.errors %}has-error{% endif %}">
-                        <label for="{{ form.orig_price.id_for_label }}" class="control-label">{% trans "Price" %}</label>
-                        <div class="input-group">
-                            <div class="input-group-addon">$</div>
-                            <input type="number" min="0" step="0.01" class="form-control" name="{{ form.orig_price.name }}" id="{{ form.orig_price.auto_id }}" placeholder="{% trans "Sale price on Amazon" %}" required value="{{ form.orig_price.data|default_if_none:'' }}">
-                        </div>
-                        <span class="help-block has-error">{% for error in form.orig_price.errors %}{{ error }}{% endfor %}</span>
-                    </div>
-                    <div class="form-group {% if form.discount.errors %}has-error{% endif %}">
-                        <label for="{{ form.discount.id_for_label }}" class="control-label">{% trans "Discount" %}</label>
-                        <div class="input-group">
-                            <input type="number" min="0" max="100" step="1" class="form-control" name="{{ form.discount.name }}" id="{{ form.discount.auto_id }}" placeholder="{% trans "% off" %}" required value="{{ form.discount.data|default_if_none:'' }}">
-                            <div class="input-group-addon">%</div>
-                        </div>
-                        <span class="help-block has-error">{% for error in form.discount.errors %}{{ error }}{% endfor %}</span>
-                    </div>
+                <span class="help-block has-error">{% for error in form.orig_price.errors %}{{ error }}{% endfor %}</span>
+            </div>
+            <div class="form-group {% if form.discount.errors %}has-error{% endif %}">
+                <label for="{{ form.discount.id_for_label }}" class="control-label">{% trans "Discount" %}</label>
+                <div class="input-group">
+                    <input type="number" min="0" max="100" step="1" class="form-control" name="{{ form.discount.name }}" id="{{ form.discount.auto_id }}" placeholder="{% trans "% off" %}" required value="{{ form.discount.data|default_if_none:'' }}">
+                    <div class="input-group-addon">%</div>
                 </div>
-                <div class="form-group {% if form.description.errors %}has-error{% endif %}">
-                    <label for="{{ form.description.id_for_label }}" class="control-label">{% trans "Product Description" %}</label>
-                    <textarea class="form-control" name="{{ form.description.name }}" id="{{ form.description.auto_id }}" placeholder="{% trans "Required. You can use the same as on Amazon" %}" rows="5" required>{{ form.description.data|default_if_none:'' }}</textarea>
-                    <span class="help-block has-error">{% for error in form.description.errors %}{{ error }}{% endfor %}</span>
-                </div>
-                <div class="form-group {% if form.image.errors %}has-error{% endif %}">
-                    <label for="{{ form.image.id_for_label }}" class="control-label">{% trans "Upload Image" %}</label>
-                    <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}" required value="{{ form.image.data }}">
-                    <span class="help-block has-error">{% for error in form.image.errors %}{{ error }}{% endfor %}</span>
-                </div>
-                <div class="form-group {% if form.requirement.errors %}has-error{% endif %}">
-                    <label for="{{ form.requirement.id_for_label }}" class="control-label">{% trans "Order Requirement" %}</label>
-                    <textarea class="form-control" name="{{ form.requirement.name }}" id="{{ form.requirement.auto_id }}" placeholder="{{ order_requirement }}" rows="3" data-toggle="tooltip" data-placement="bottom" title="{{ order_requirement }}">{{ form.requirement.data|default_if_none:'' }}</textarea>
-                    <span class="help-block has-error">{% for error in form.requirement.errors %}{{ error }}{% endfor %}</span>
-                </div>
-                <div class="form-group {% if form.amazon_link.errors %}has-error{% endif %}">
-                    <label for="{{ form.amazon_link.id_for_label }}" class="control-label">{% trans "Amazon Link" %}</label>
-                    <input type="text" class="form-control" name="{{ form.amazon_link.name }}" id="{{ form.amazon_link.auto_id }}" placeholder="{% trans 'Optional' %}">{{ form.amazon_link.data|default_if_none:'' }}</input>
-                    <span class="help-block has-error">{% for error in form.amazon_link.errors %}{{ error }}{% endfor %}</span>
-                </div>
-                <div class="form-group {% if form.how_to_find.errors %}has-error{% endif %}">
-                    <label for="{{ form.how_to_find.id_for_label }}" class="control-label">{% trans "Or: Other Way to Find the Product" %}</label>
-                    <textarea class="form-control" name="{{ form.how_to_find.name }}" id="{{ form.how_to_find.auto_id }}" placeholder="{% trans 'Optional. You can provide search keyword.' %}" rows="3">{{ form.how_to_find.data|default_if_none:'' }}</textarea>
-                    <span class="help-block has-error">{% for error in form.how_to_find.errors %}{{ error }}{% endfor %}</span>
-                </div>
-                <div class="form-inline">
-                    <div class="form-group {% if form.stock.errors %}has-error{% endif %}">
-                        <label for="{{ form.stock.id_for_label }}" class="control-label">{% trans "Stock" %}</label>
-                        <input type="number" min="0" step="1" class="form-control" name="{{ form.stock.name }}" id="{{ form.stock.auto_id }}" required value="{{ form.stock.data|default_if_none:'' }}">
-                        <span class="help-block has-error">{% for error in form.stock.errors %}{{ error }}{% endfor %}</span>
-                    </div>
-                    <div class="form-group {% if form.limit_per_day.errors %}has-error{% endif %}">
-                        <label for="{{ form.limit_per_day.id_for_label }}" class="control-label">{% trans "Limit per Day" %}</label>
-                        <input type="number" min="0" step="1" class="form-control" name="{{ form.limit_per_day.name }}" id="{{ form.limit_per_day.auto_id }}" required value="{{ form.limit_per_day.data|default_if_none:'' }}">
-                        <span class="help-block has-error">{% for error in form.limit_per_day.errors %}{{ error }}{% endfor %}</span>
-                    </div>
-                </div>
-                <div class="pull-right">
-                    <a href="javascript:history.back()" type="button" class="btn btn-default">{% trans 'Cancel' %}</a>
-                    <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-                </div>
-            </form>
+                <span class="help-block has-error">{% for error in form.discount.errors %}{{ error }}{% endfor %}</span>
             </div>
         </div>
-    </div>
-    </div>
-
-
-
+        <div class="form-group {% if form.description.errors %}has-error{% endif %}">
+            <label for="{{ form.description.id_for_label }}" class="control-label">{% trans "Product Description" %}</label>
+            <textarea class="form-control" name="{{ form.description.name }}" id="{{ form.description.auto_id }}" placeholder="{% trans "Required. You can use the same as on Amazon" %}" rows="5" required>{{ form.description.data|default_if_none:'' }}</textarea>
+            <span class="help-block has-error">{% for error in form.description.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-group {% if form.image.errors %}has-error{% endif %}">
+            <label for="{{ form.image.id_for_label }}" class="control-label">{% trans "Upload Image" %}</label>
+            <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}" required value="{{ form.image.data }}">
+            <span class="help-block has-error">{% for error in form.image.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-group {% if form.requirement.errors %}has-error{% endif %}">
+            <label for="{{ form.requirement.id_for_label }}" class="control-label">{% trans "Order Requirement" %}</label>
+            <textarea class="form-control" name="{{ form.requirement.name }}" id="{{ form.requirement.auto_id }}" placeholder="{{ order_requirement }}" rows="3" data-toggle="tooltip" data-placement="bottom" title="{{ order_requirement }}">{{ form.requirement.data|default_if_none:'' }}</textarea>
+            <span class="help-block has-error">{% for error in form.requirement.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-group {% if form.amazon_link.errors %}has-error{% endif %}">
+            <label for="{{ form.amazon_link.id_for_label }}" class="control-label">{% trans "Amazon Link" %}</label>
+            <input type="text" class="form-control" name="{{ form.amazon_link.name }}" id="{{ form.amazon_link.auto_id }}" placeholder="{% trans 'Optional' %}">{{ form.amazon_link.data|default_if_none:'' }}</input>
+            <span class="help-block has-error">{% for error in form.amazon_link.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-group {% if form.how_to_find.errors %}has-error{% endif %}">
+            <label for="{{ form.how_to_find.id_for_label }}" class="control-label">{% trans "Or: Other Way to Find the Product" %}</label>
+            <textarea class="form-control" name="{{ form.how_to_find.name }}" id="{{ form.how_to_find.auto_id }}" placeholder="{% trans 'Optional. You can provide search keyword.' %}" rows="3">{{ form.how_to_find.data|default_if_none:'' }}</textarea>
+            <span class="help-block has-error">{% for error in form.how_to_find.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="form-inline">
+            <div class="form-group {% if form.stock.errors %}has-error{% endif %}">
+                <label for="{{ form.stock.id_for_label }}" class="control-label">{% trans "Stock" %}</label>
+                <input type="number" min="0" step="1" class="form-control" name="{{ form.stock.name }}" id="{{ form.stock.auto_id }}" required value="{{ form.stock.data|default_if_none:'' }}">
+                <span class="help-block has-error">{% for error in form.stock.errors %}{{ error }}{% endfor %}</span>
+            </div>
+            <div class="form-group {% if form.limit_per_day.errors %}has-error{% endif %}">
+                <label for="{{ form.limit_per_day.id_for_label }}" class="control-label">{% trans "Limit per Day" %}</label>
+                <input type="number" min="0" step="1" class="form-control" name="{{ form.limit_per_day.name }}" id="{{ form.limit_per_day.auto_id }}" required value="{{ form.limit_per_day.data|default_if_none:'' }}">
+                <span class="help-block has-error">{% for error in form.limit_per_day.errors %}{{ error }}{% endfor %}</span>
+            </div>
+        </div>
+        <div class="pull-right">
+            <a href="javascript:history.back()" type="button" class="btn btn-default">{% trans 'Cancel' %}</a>
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+        </div>
+    </form>
 {% endblock %}
