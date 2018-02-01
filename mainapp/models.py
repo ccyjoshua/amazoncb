@@ -41,7 +41,9 @@ class Product(models.Model):
     discount = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])  # percentage off
     description = models.TextField(max_length=5000)
     image = models.ImageField(upload_to=product_user_directory_path)
-    requirement = models.TextField(blank=True, max_length=500)
+    order_requirement = models.TextField(blank=True, max_length=500)
+    must_review = models.BooleanField(default=True)
+    review_requirement = models.TextField(blank=True, max_length=500)
     amazon_link = models.URLField(blank=True, max_length=500, validators=[
         AmazonURLValidator(message=_('Domain must be Amazon'), code='invalid_domain')])
     how_to_find = models.TextField(blank=True, max_length=500)
@@ -59,8 +61,11 @@ class Product(models.Model):
     def description_as_list(self):
         return self.description.split('\n')
 
-    def requirement_as_list(self):
-        return self.requirement.split('\n')
+    def order_requirement_as_list(self):
+        return self.order_requirement.split('\n')
+
+    def review_requirement_as_list(self):
+        return self.review_requirement.split('\n')
 
     @property
     def sale_price(self):
@@ -74,14 +79,21 @@ class Product(models.Model):
 @python_2_unicode_compatible
 class Purchase(models.Model):
     ORDERED_STATUS = 1
-    ORDER_VERIFIED_STATUS = 2
-    REVIEWED_STATUS = 3
-    REVIEW_VERIFIED_STATUS = 4
+    PEND_REVIEW_STATUS = 2
+    PEND_REVIEW_VERIFY_STATUS = 3
+    PEND_DELIVERY = 4
+    PEND_DELIVERY_VERIFY = 5
+    PEND_PAYMENT_STATUS = 6
+    COMPLETED_STATUS = 7
     STATUS_CHOICES = (
-        (ORDERED_STATUS, 'Ordered'),
-        (ORDER_VERIFIED_STATUS, 'Order Verified'),
-        (REVIEWED_STATUS, 'Reviewed'),
-        (REVIEW_VERIFIED_STATUS, 'Review Verified'),
+        (ORDERED_STATUS, 'Ordered Pending Verify'),
+        (PEND_REVIEW_STATUS, 'Pending Review'),
+        (PEND_REVIEW_VERIFY_STATUS, 'Pending Review Verify'),
+        (PEND_DELIVERY, 'Pending Delivery'),
+        (PEND_DELIVERY_VERIFY, 'Pending Delivery Verify'),
+        (PEND_PAYMENT_STATUS, 'Pending Payment'),
+        (COMPLETED_STATUS, 'Completed'),
+
     )
     order_number = models.CharField(max_length=50)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)

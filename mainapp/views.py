@@ -147,8 +147,8 @@ class SellerUpdateProductView(LoginRequiredMixin, PermissionRequiredMixin, Selle
     permission_required = 'mainapp.change_product'
     model = Product
     template_name = 'mainapp/seller_update_product.html'
-    fields = ['name', 'orig_price', 'discount', 'description', 'requirement', 'amazon_link', 'how_to_find', 'stock',
-              'limit_per_day']
+    fields = ['name', 'orig_price', 'discount', 'description', 'order_requirement', 'must_review',
+              'review_requirement', 'amazon_link', 'how_to_find', 'stock', 'limit_per_day']
 
     def __init__(self, **kwargs):
         self.old_limit_per_day = None
@@ -243,6 +243,7 @@ class BuyerRequestOrderView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
         product = get_object_or_404(Product, id=self.kwargs.get('product_id'))
         form.instance.product_id = product
         form.instance.buyer_id = self.request.user
+        form.instance.status = Purchase.ORDERED_STATUS
         return super(BuyerRequestOrderView, self).form_valid(form)
 
     def get(self, request, *args, **kwargs):

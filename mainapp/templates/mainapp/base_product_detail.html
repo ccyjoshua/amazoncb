@@ -25,16 +25,34 @@
                 {% endfor%}
             </ul>
         </div></div>
-        {% if object.requirement %}
+        {% if object.order_requirement %}
             <div class="row"><div class="col-xs-12">
                 <h4>{% trans 'Order Requirement' %}:</h4>
                 <ul>
-                    {% for req in object.requirement_as_list %}
+                    {% for req in object.order_requirement_as_list %}
                         <li>{{ req }}</li>
                     {% endfor%}
                 </ul>
             </div></div>
         {% endif %}
+        <div class="row"><div class="col-xs-12">
+            <h4>{% trans 'Review Requirement' %}:</h4>
+            {% if object.must_review %}
+                <ul>
+                    {% if object.review_requirement %}
+                        {% for req in object.review_requirement_as_list %}
+                            <li>{{ req }}</li>
+                        {% endfor%}
+                    {% else %}
+                        <li>{% trans 'This product requires positive review' %}</li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <ul>
+                    <li>{% trans 'This product does not require review' %}</li>
+                </ul>
+            {% endif %}
+        </div></div>
         {% if object.amazon_link or object.how_to_find %}
             <div class="row"><div class="col-xs-12">
                 <h4>{% trans 'How to Find the Product' %}:</h4>

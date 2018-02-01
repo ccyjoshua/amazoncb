@@ -46,10 +46,19 @@
             <input type="file" name="{{ form.image.name }}" id="{{ form.image.auto_id }}" required value="{{ form.image.data }}">
             <span class="help-block has-error">{% for error in form.image.errors %}{{ error }}{% endfor %}</span>
         </div>
-        <div class="form-group {% if form.requirement.errors %}has-error{% endif %}">
-            <label for="{{ form.requirement.id_for_label }}" class="control-label">{% trans "Order Requirement" %}</label>
-            <textarea class="form-control" name="{{ form.requirement.name }}" id="{{ form.requirement.auto_id }}" placeholder="{{ order_requirement }}" rows="3" data-toggle="tooltip" data-placement="bottom" title="{{ order_requirement }}">{{ form.requirement.data|default_if_none:'' }}</textarea>
-            <span class="help-block has-error">{% for error in form.requirement.errors %}{{ error }}{% endfor %}</span>
+        <div class="form-group {% if form.order_requirement.errors %}has-error{% endif %}">
+            <label for="{{ form.order_requirement.id_for_label }}" class="control-label">{% trans "Order Requirement" %}</label>
+            <textarea class="form-control" name="{{ form.order_requirement.name }}" id="{{ form.order_requirement.auto_id }}" placeholder="{{ order_requirement }}" rows="3">{{ form.order_requirement.data|default_if_none:'' }}</textarea>
+{#        data-toggle="tooltip" data-placement="bottom" title="{{ order_requirement }}"#}
+            <span class="help-block has-error">{% for error in form.order_requirement.errors %}{{ error }}{% endfor %}</span>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name="{{ form.must_review.name }}" checked onchange="toggle_review_textarea(this)">{% trans "Must Review" %}</label>
+        </div>
+        <div class="form-group {% if form.review_requirement.errors %}has-error{% endif %}" id="id_review_req_form">
+            <label for="{{ form.review_requirement.id_for_label }}" class="control-label">{% trans "Review Requirement" %}</label>
+            <textarea class="form-control" name="{{ form.review_requirement.name }}" id="{{ form.review_requirement.auto_id }}" placeholder="{{ review_requirement }}" rows="3">{{ form.review_requirement.data|default_if_none:'' }}</textarea>
+            <span class="help-block has-error">{% for error in form.review_requirement.errors %}{{ error }}{% endfor %}</span>
         </div>
         <div class="form-group {% if form.amazon_link.errors %}has-error{% endif %}">
             <label for="{{ form.amazon_link.id_for_label }}" class="control-label">{% trans "Amazon Link" %}</label>

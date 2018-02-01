@@ -146,3 +146,12 @@ $(function () {
         }
     }, 1000);
 });
+
+function toggle_review_textarea(checkboxElem) {
+    var review = $('#id_review_req_form');
+    if (checkboxElem.checked) {
+        review.show();
+    } else {
+        review.hide();
+    }
+}

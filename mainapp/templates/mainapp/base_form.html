@@ -2,7 +2,8 @@
 {% load i18n %}
 
 {% block content %}
-    {% trans "Optional. For example: size, color, review (rating and time to leave review) and seller feedback." as order_requirement %}
+    {% trans "Optional. For example: size, color." as order_requirement %}
+    {% trans "Optional. For example: review (rating and time to leave review) and seller feedback." as review_requirement %}
     <div class="container">
     <div class="mainbox col-sm-8 col-sm-offset-2">
         {% block before_panel %}{% endblock %}

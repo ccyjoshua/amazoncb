@@ -12,11 +12,14 @@
 
     {% for product in object_list %}
     <div class="row">
-        <div class="col-xs-3">
-            <img src="{{ product.image.url }}" alt="Product Image" class="img-responsive">
+        <div class="col-xs-4 col-sm-3">
+            <img src="{{ product.image.url }}" alt="Product Image" class="my-img-responsive center-block">
         </div>
-        <div class="col-xs-9">
-            <a href="{% block product_url %}{% endblock %}"><h4 class="text-max-row-2">{{ product.name }}</h4></a>
+        <div class="col-xs-8 col-sm-9">
+            <a href="{% block product_url %}{% endblock %}">
+                <h4 class="text-max-row-2 hidden-xs">{{ product.name }}</h4>
+                <p class="text-max-row-2 visible-xs-block">{{ product.name }}</p>
+            </a>
             <div class="row"><div class="col-xs-12">
                 <span class="font-price color-price">${{ product.sale_price }}</span>{% if product.discount != 0 %} <s>${{ product.orig_price }}</s>{% endif %}
             </div></div>
