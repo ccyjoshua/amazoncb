@@ -22,6 +22,10 @@
   line-height: 1.8em;
 }
 
+.text-clamp {
+    overflow: hidden;
+}
+
 .vcenter {
   position: relative;
   transform: translateY(40%);
@@ -29,6 +33,10 @@
 
 .margin-top {
     margin-top: 5px;
+}
+
+.margin-right {
+    margin-right: 5px;
 }
 
 .font-price {
@@ -41,6 +49,10 @@
 
 .color-price {
     color: #B12704;
+}
+
+.color-status {
+    color: #ff5000
 }
 
 .my-img-responsive {

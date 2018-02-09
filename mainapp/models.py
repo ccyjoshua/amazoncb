@@ -105,4 +105,13 @@ class Purchase(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'Product ' + str(self.product_id.id).encode("utf-8").decode("utf-8") + ', buyer: ' + self.buyer_id.username
+        return 'Product: ' + str(self.product_id.id).encode("utf-8").decode("utf-8") + ', buyer: ' + self.buyer_id.username
+
+
+@python_2_unicode_compatible
+class Profile(models.Model):
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
+    amazon_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return 'User: ' + str(self.user_id.id).encode("utf-8").decode("utf-8") + ', amazon_name: ' + self.amazon_name

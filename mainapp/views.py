@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import get_object_or_404, render
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.edit import FormView, UpdateView, CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -21,6 +21,7 @@ from apps import schedule
 
 # Buyer request order time limit in minutes
 EXPIRATION_TIME = 1  # FIXME
+N_PAGINATION = 10
 # Store pending order as {product_id: {user_id: time}}
 pending_order_map = defaultdict(dict)
 
@@ -62,7 +63,7 @@ class SellerProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListVie
     permission_required = 'mainapp.add_product'
 
     template_name = 'mainapp/seller_product_list.html'
-    paginate_by = 2
+    paginate_by = N_PAGINATION
     ordering = '-updated_at'
 
     # Note that we cannot set queryset directly in class attribute
@@ -216,7 +217,7 @@ class BuyerProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     permission_required = 'mainapp.view_product'
 
     template_name = 'mainapp/buyer_product_list.html'
-    paginate_by = 2
+    paginate_by = N_PAGINATION
     model = Product
     ordering = '-updated_at'
 
@@ -232,7 +233,7 @@ class BuyerRequestOrderView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
     model = Purchase
     fields = ['order_number', 'order_screenshot']
     template_name = 'mainapp/buyer_request_order.html'
-    success_url = reverse_lazy('buyer_product_list')  # TODO: change to order status
+    success_url = reverse_lazy('buyer_order_done')
 
     def get_context_data(self, **kwargs):
         kwargs['expiration'] = pending_order_map[long(self.kwargs.get('product_id'))][self.request.user.id]\
@@ -275,3 +276,24 @@ class BuyerRequestOrderView(LoginRequiredMixin, PermissionRequiredMixin, CreateV
             Product.objects.filter(id=self.kwargs.get('product_id')).update(
                 pending_order=F('pending_order') - 1, ordered=F('ordered') + 1, ordered_today=F('ordered_today') + 1)
             return super(BuyerRequestOrderView, self).post(request, *args, **kwargs)
+
+
+class BuyerOrderDoneView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = 'mainapp.add_purchase'
+    template_name = 'mainapp/buyer_order_done.html'
+
+
+class BuyerOrderListView(LoginRequiredMixin, ListView):
+    template_name = 'mainapp/buyer_order_list.html'
+    paginate_by = N_PAGINATION
+    ordering = '-updated_at'
+
+    def get_queryset(self):
+        self.queryset = Purchase.objects.filter(buyer_id=self.request.user.id)
+        return super(BuyerOrderListView, self).get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super(BuyerOrderListView, self).get_context_data(**kwargs)
+        buyer_changeable_status_list = [Purchase.PEND_REVIEW_STATUS, Purchase.PEND_DELIVERY]
+        context.update({'status_list': buyer_changeable_status_list})
+        return context

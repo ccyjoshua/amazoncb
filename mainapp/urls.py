@@ -12,5 +12,7 @@ urlpatterns = [
     url(r'^buyer/product-list/$', views.BuyerProductListView.as_view(), name='buyer_product_list'),
     url(r'^buyer/product-detail/(?P<pk>\d+)$', views.BuyerProductDetailView.as_view(), name='buyer_product_detail'),
     url(r'^buyer/request-order/(?P<product_id>\d+)$', views.BuyerRequestOrderView.as_view(), name='buyer_request_order'),
+    url(r'^buyer/order-done/$', views.BuyerOrderDoneView.as_view(), name='buyer_order_done'),
+    url(r'^buyer/order-list/$', views.BuyerOrderListView.as_view(), name='buyer_order_list'),
 
 ]

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="row"><div class="col-xs-12 text-center">
+            <h4>{% trans 'Thank you for submitting order' %}</h4>
+            <p>{% trans 'Your order is pending for verification by the seller' %}</p>
+            <a href="{% url 'buyer_product_list' %}" class="btn btn-primary">{% trans 'Browse more products' %}</a>
+            <a href="{% url 'buyer_order_list' %}" class="btn btn-default">{% trans 'View my order status' %}</a>
+        </div> </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+{#    <div class="col-sm-8 col-sm-offset-2">#}
+
+    {% block before_list %}{% endblock %}
+    <h3>{% trans 'My Orders' %}</h3>
+
+    {% for purchase in object_list %}
+        <div class="row visible-xs-block">
+            <div class="col-xs-8">
+                {{ purchase.product_id.seller_id.profile.amazon_name }}
+            </div>
+            <div class="col-xs-4 text-right">
+                <a href="#" class="btn btn-default">{% trans 'Contact' %}</a>
+            </div>
+        </div>
+        <div class="row visible-xs-block margin-top">
+            <div class="col-xs-8 color-status">
+                {{ purchase.get_status_display }}
+            </div>
+            <div class="col-xs-4 text-right">
+                <a href="#" class="btn btn-primary {% if purchase.status not in status_list %}disabled{% endif %}">{% trans 'Change' %}</a>
+            </div>
+        </div>
+        <div class="row hidden-xs">
+            <div class="col-sm-6">
+                <span class="margin-right">{{ purchase.product_id.seller_id.profile.amazon_name }}</span>
+                <a href="#" class="btn btn-default">{% trans 'Contact' %}</a>
+            </div>
+            <div class="col-sm-6 text-right">
+                <span class="margin-right color-status">{{ purchase.get_status_display }}</span>
+                <a href="#" class="btn btn-primary {% if purchase.status not in status_list %}disabled{% endif %}">{% trans 'Change' %}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-3">
+                <img src="{{ purchase.product_id.image.url }}" alt="Product Image" class="my-img-responsive center-block">
+            </div>
+            <div class="col-xs-8 col-sm-9">
+                <a href="{% block product_url %}{% endblock %}">
+                    <h4 class="text-max-row-2 hidden-xs">{{ purchase.product_id.name }}</h4>
+                    <p class="text-max-row-2 visible-xs-block">{{ purchase.product_id.name }}</p>
+                </a>
+                <div class="row"><div class="col-xs-12">
+                    <p><span>${{ purchase.product_id.sale_price }}</span>{% if purchase.product_id.discount != 0 %} <s>${{ purchase.product_id.orig_price }}</s>{% endif %}</p>
+                </div></div>
+
+                {% block product_control %}{% endblock %}
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+    {% if object_list %}
+        {% include 'mainapp/pagination.html' %}
+    {% else %}
+        <div class="row"><div class="col-xs-12 text-center">
+            <h1><small>{% trans 'The list is empty' %}</small></h1>
+        </div> </div>
+    {% endif %}
+{#    </div>#}
+</div>
+
+{% block after_list %}{% endblock %}
+
+{% endblock %}

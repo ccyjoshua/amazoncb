@@ -7,3 +7,4 @@ from models import *
 # Register your models here.
 admin.site.register(Product)
 admin.site.register(Purchase)
+admin.site.register(Profile)
